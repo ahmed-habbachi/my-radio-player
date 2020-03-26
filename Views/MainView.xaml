@@ -1,0 +1,157 @@
+﻿<Window x:Class="MyBrain.Applications.MyRadioPlayer.Views.MainView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:fa="http://schemas.fontawesome.io/icons/"
+        Title="B2P Radio Player" Height="376.018" Width="562" Loaded="Window_Loaded" Icon="/MyBrain.Applications.MyRadioPlayer;component/MyBrainRadioPlayer.ico" Closing="Window_Closing" MinHeight="376.018" MinWidth="562">
+
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Resources/Styles.xaml"/>
+                <ResourceDictionary Source="/Resources/Templates.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <Grid x:Name ="grdMain" Background="White">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="200" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="60" />
+        </Grid.RowDefinitions>
+        <!--this is the main player control do not delete it-->
+        <Border x:Name="mediaPlayerBorder" Visibility="Hidden" Background="Gray" BorderBrush="Gray" Grid.Column="0" BorderThickness="4,4,4,4" Margin="182,24,61,210" CornerRadius="5,5,5,5" ToolTip="Click here to collapse/expand the video">
+            <MediaElement x:Name="mediaPlayerMain" LoadedBehavior="Manual" Stretch="Fill" Margin="0,0,0,0" RenderTransformOrigin="0.5,0.5" BufferingStarted="MediaPlayerMain_BufferingStarted" MediaFailed="MediaPlayerMain_MediaFailed" BufferingEnded="MediaPlayerMain_BufferingEnded" MediaEnded="MediaPlayerMain_MediaEnded"/>
+        </Border>
+        <!--....-->
+
+        <Grid Grid.ColumnSpan="2" Grid.Column="0" Grid.Row="0">
+            <ToolBar Background="Transparent">
+                <Button x:Name="btnAdd" Background="Transparent" Width="32" Height="32"  Click="BtnAdd_Click">
+                    <fa:ImageAwesome Icon="PlusCircle" Foreground="Gray" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                </Button>
+                <Button x:Name="btnRemove" Background="Transparent" Width="32" Height="32" Click="BtnRemove_Click">
+                    <fa:ImageAwesome Icon="MinusCircle" Foreground="Gray" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                </Button>
+                <Button x:Name="btnUp" Background="Transparent" Width="32" Height="32" IsEnabled="False" Click="BtnUp_Click">
+                    <fa:ImageAwesome Icon="ArrowCircleUp" Foreground="Gray" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                </Button>
+                <Button x:Name="btnDown" Background="Transparent" Width="32" Height="32" IsEnabled="False" Click="BtnDown_Click">
+                    <fa:ImageAwesome Icon="ArrowCircleDown" Foreground="Gray" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                </Button>
+                <Button x:Name="btnEditRadio" Background="Transparent" Width="32" Height="32" IsEnabled="False" Click="BtnEditRadio_Click">
+                    <fa:ImageAwesome Icon="PencilSquare" Foreground="Gray" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                </Button>
+                <Button x:Name="btnSave" Background="Transparent" Width="32" Height="32" IsEnabled="False" Visibility="Hidden" Click="BtnSave_Click">
+                    <fa:ImageAwesome Icon="Save" Foreground="Gray" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                </Button>
+
+            </ToolBar>
+            <ComboBox x:Name="cmbCulture" Visibility="Visible" HorizontalAlignment="Right" Margin="0,0,15,0" VerticalAlignment="Center" Width="120" SelectionChanged="CmbCulture_SelectionChanged"/>
+        </Grid>
+        <Grid Grid.Column="0" Grid.Row="1"  Margin="0,10,0,20" Height="Auto">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"></RowDefinition>
+            </Grid.RowDefinitions>
+            <TreeView x:Name="trvRadioStations" Grid.Column="0" Width="194" SelectedItemChanged="TrvRadioStations_SelectedItemChanged" VerticalAlignment="Top">
+                <TreeViewItem IsExpanded="True">
+                    <TreeViewItem.Header>
+                        <StackPanel Orientation="Horizontal">
+                            <fa:ImageAwesome Icon="Music" Foreground="Gray" VerticalAlignment="Center" HorizontalAlignment="Center" Height="26" Width="26" />
+                            <Label x:Name="lblTreeViewRoot" Content="Radio Stations"></Label>
+                        </StackPanel>
+                    </TreeViewItem.Header>
+                </TreeViewItem>
+            </TreeView>
+        </Grid>
+        <Grid Grid.Column="1" Grid.Row="1"  Background="Transparent" Width="Auto" Margin="0,0,0,20" >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="10px"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <StackPanel Grid.Column="0" Grid.Row="0" Background="Transparent">
+                <Image x:Name="imageBoxRadio" Grid.Column="0" Grid.Row="0" HorizontalAlignment="Left" Margin="5,0,0,0"  Height="40" Width="41" Source="/MyBrain.Applications.MyRadioPlayer;component/Resources/Images/radio-26.png"/>
+            </StackPanel>
+            <StackPanel Grid.Column="0" Grid.Row="1" Background="Transparent"  Width="Auto" Height="Auto">
+                <Label x:Name="lblRadioName"  Content="Radio Name:"/>
+                <TextBox x:Name="txtRadioName" TextWrapping="Wrap" IsEnabled="False" VerticalAlignment="Center" GotFocus="Txt_GotFocus"/>
+            </StackPanel>
+
+            <StackPanel Grid.Column="2" Grid.Row="1" Background="Transparent" Width="Auto" Height="Auto" >
+                <Label x:Name="lblRadioLogo" Grid.Row="0" Grid.ColumnSpan="2" Content="Radio Logo:"/>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="40"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <TextBox x:Name="txtRadioLogo" Grid.Column="0" TextWrapping="Wrap" IsEnabled="False" GotFocus="Txt_GotFocus" Margin="0,0,0,33" Height="18"/>
+                    <Button x:Name="btnEditRadioLogo" Background="Transparent" Grid.Column="1"  Width="30" IsEnabled="False" Click="BtnEditRadioLogo_Click" Margin="5,0,5,33" Height="18">
+                        ...
+                    </Button>
+                </Grid>
+            </StackPanel>
+
+            <StackPanel Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="3" Background="Transparent" Width="Auto" Height="Auto">
+                <Label x:Name="lblRadioWebSite" Content="Radio WebSite:"/>
+                <TextBox x:Name="txtRadioWebSite" TextWrapping="Wrap" IsEnabled="False" GotFocus="Txt_GotFocus"/>
+            </StackPanel>
+
+            <StackPanel Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="3" Background="Transparent" Width="Auto" Height="Auto">
+                <Label x:Name="lblRadioUrlStreaming" Content="Radio Url Streaming:" Grid.Column="1" />
+                <TextBox x:Name="txtRadioStreamingURL" Grid.Column="1" TextWrapping="Wrap" IsEnabled="False" GotFocus="Txt_GotFocus"/>
+            </StackPanel>
+
+            <StackPanel Grid.Column="2" Grid.Row="4" Background="Transparent" Width="Auto" Height="Auto" Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button x:Name="btnOk" Background="Transparent" HorizontalAlignment="Right" Width="32" Height="32" Margin="0,0,10,0" Click="BtnOk_Click" IsEnabled="True" Visibility="Hidden">
+                    <fa:ImageAwesome Icon="CheckCircle" Foreground="Gray" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                </Button>
+
+                <Button x:Name="btnCancel" Background="Transparent" HorizontalAlignment="Left" Width="32" Height="32" Margin="0,0,10,0" Click="BtnCancel_Click" IsEnabled="True" Visibility="Hidden">
+                    <fa:ImageAwesome Icon="TimesCircle" Foreground="Gray" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                </Button>
+            </StackPanel>
+        </Grid>
+
+
+        <Border Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" CornerRadius="5,5,5,5" Background="WhiteSmoke" BorderBrush="Gray" BorderThickness="4,4,4,4" Margin="10,5,5,10">
+            <StackPanel Background="Transparent" Width="Auto" Margin="0,0,0,0" Orientation="Horizontal" Height="Auto">
+                <Button x:Name="btnPlay" Width="50" Height="50" Margin="10,-30,0,0" Template="{StaticResource controlButtonTemplate}" FontSize="14" FontWeight="Bold" Foreground="LightGreen" FontFamily="Webdings" ToolTip="Play" Click="BtnPlay_Click">
+                    <fa:ImageAwesome Icon="PlayCircleOutline" Foreground="Gray" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                </Button>
+                <Button x:Name="btnPause" Width="40" Height="40" Margin="-15,-50,0,0" Template="{StaticResource controlButtonTemplate}" FontSize="14" FontWeight="Bold" Foreground="#FFFFC14E" FontFamily="Webdings" ToolTip="Pause" Click="BtnPause_Click">
+                    <fa:ImageAwesome Icon="PauseCircleOutline" Foreground="Gray" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                </Button>
+                <Button x:Name="btnStop" Width="30" Height="30" Margin="-10,-45,0,0" Template="{StaticResource controlButtonTemplate}" FontSize="14" FontWeight="Bold" Foreground="#FFFF5D5D" FontFamily="Webdings" ToolTip="Stop" Click="BtnStop_Click">
+                    <fa:ImageAwesome Icon="StopCircleOutline" Foreground="Gray" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                </Button>
+                <!-- Seek Control -->
+                <!-- Volume Control -->
+                <TextBlock x:Name="txtBlkVolume" Foreground="Gray" Margin="5,5,5,5"  VerticalAlignment="Center" FontSize="10">Volume</TextBlock>
+                <Slider Name="sliderVolume" ValueChanged="MediaVolume_ValueChanged"  Margin="2,0,0,0" VerticalAlignment="Center" Width="80" Height="Auto" Minimum="0" Maximum="1" Value="0.5"/>
+
+                <TextBlock x:Name="txtRating" Foreground="Gray" Margin="0,0,0,0"  VerticalAlignment="Center" FontSize="10" Visibility="Hidden">Rating For Item</TextBlock>
+                <TextBlock x:Name="txtBlkStat" Foreground="Gray" Margin="5,5,5,5"  VerticalAlignment="Center" FontSize="10">Stat:</TextBlock>
+                <TextBlock x:Name="txtBlkSatus" Foreground="Gray" Margin="5,5,5,5"  VerticalAlignment="Center" FontSize="10">Ready</TextBlock>
+            </StackPanel>
+        </Border>
+
+    </Grid>
+</Window>
