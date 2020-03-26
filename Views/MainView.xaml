@@ -58,7 +58,7 @@
                 <RowDefinition Height="*"></RowDefinition>
             </Grid.RowDefinitions>
             <TreeView x:Name="trvRadioStations" Grid.Column="0" Width="194" SelectedItemChanged="TrvRadioStations_SelectedItemChanged" VerticalAlignment="Top">
-                <TreeViewItem IsExpanded="True">
+                <TreeViewItem>
                     <TreeViewItem.Header>
                         <StackPanel Orientation="Horizontal">
                             <fa:ImageAwesome Icon="Music" Foreground="Gray" VerticalAlignment="Center" HorizontalAlignment="Center" Height="26" Width="26" />

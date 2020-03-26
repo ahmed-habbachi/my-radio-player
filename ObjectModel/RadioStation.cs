@@ -15,7 +15,13 @@ namespace MyBrain.Applications.MyRadioPlayer.ObjectModel
         {
             get
             {
-                return new Uri(StreamingSource);
+                if (Uri.TryCreate(StreamingSource, UriKind.RelativeOrAbsolute, out Uri uri))
+                {
+                    return uri;
+                } else
+                {
+                    return null;
+                }
             }
         }
 

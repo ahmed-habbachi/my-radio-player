@@ -148,14 +148,17 @@ namespace MyBrain.Applications.MyRadioPlayer.Views
                 }
 
                 _currentRadio.Logo = this.txtRadioLogo.Text;
-                _currentRadio.StreamingSource = this.txtRadioStreamingURL.Text;
+                if (Uri.TryCreate(this.txtRadioStreamingURL.Text, UriKind.RelativeOrAbsolute, out _))
+                {
+                    _currentRadio.StreamingSource = this.txtRadioStreamingURL.Text; 
+                }
                 _currentRadio.WebSite = this.txtRadioWebSite.Text;
                 ChangeControlsState(false);
 
                 if (!isNewRadioStation)
                 {
-                    TreeViewItem trvRootItem = this.trvRadioStations.SelectedItem as TreeViewItem;
-                    UpdateTreeViewItem(trvRootItem);
+                    TreeViewItem trvSelectedItem = this.trvRadioStations.SelectedItem as TreeViewItem;
+                    UpdateTreeViewItem(trvSelectedItem);
                     SyncControlsWithCurrentRadioStation(_currentRadio);
                 }
                 else
@@ -164,8 +167,7 @@ namespace MyBrain.Applications.MyRadioPlayer.Views
                     TreeViewItem radioItem = new TreeViewItem();
                     UpdateTreeViewItem(radioItem);
                     radioItem.Tag = _currentRadio;
-                    TreeViewItem rootItem = (TreeViewItem)this.trvRadioStations.ItemContainerGenerator.ContainerFromItem(this.trvRadioStations.Items.GetItemAt(0));
-                    rootItem.Items.Add(radioItem);
+                    this.trvRadioStations.Items.Add(radioItem);
                     ChangeRadioStation(_currentRadio);
                 }
             }
@@ -202,8 +204,8 @@ namespace MyBrain.Applications.MyRadioPlayer.Views
 
         private void BtnAdd_Click(object sender, RoutedEventArgs e)
         {
-            ChangeControlsState(true);
             CreateNewStation();
+            ChangeControlsState(true);
         }
 
         private void BtnRemove_Click(object sender, RoutedEventArgs e)
@@ -220,9 +222,8 @@ namespace MyBrain.Applications.MyRadioPlayer.Views
                     try
                     {
                         _profile.RadioStations.Remove(radioToDelete);
-                        TreeViewItem parent = itemToDelete.Parent as TreeViewItem;
-                        int index = parent.Items.IndexOf(itemToDelete);
-                        parent.Items.RemoveAt(index);
+                        int index = this.trvRadioStations.Items.IndexOf(itemToDelete);
+                        this.trvRadioStations.Items.RemoveAt(index);
                     }
                     catch (Exception ex)
                     {
@@ -408,23 +409,21 @@ namespace MyBrain.Applications.MyRadioPlayer.Views
 
         private void InitializeTreeViewRadioStations(Profile profile)
         {
-            TreeViewItem trvRootItem = (TreeViewItem)this.trvRadioStations.ItemContainerGenerator.ContainerFromItem(this.trvRadioStations.Items.GetItemAt(0));
-
-            if (trvRootItem.Items.Count != 0)
+            if (this.trvRadioStations.Items.Count != 0)
             {
-                trvRootItem.Items.Clear();
+                this.trvRadioStations.Items.Clear();
             }
 
             foreach (RadioStation radio in profile.RadioStations)
             {
-                AddRadioNodeToTreeView(trvRootItem, radio);
+                AddRadioNodeToTreeView(radio);
             }
 
-            if (trvRootItem.Items.Count > 0)
+            if (this.trvRadioStations.Items.Count > 0)
             {
                 if (!string.IsNullOrEmpty(profile.LastRadioId))
                 {
-                    foreach (TreeViewItem item in trvRootItem.Items)
+                    foreach (TreeViewItem item in this.trvRadioStations.Items)
                     {
                         if (item.Tag is RadioStation itemRadio && itemRadio.Id == profile.LastRadioId)
                         {
@@ -436,7 +435,7 @@ namespace MyBrain.Applications.MyRadioPlayer.Views
                 }
                 else
                 {
-                    if (trvRootItem.Items[0] is TreeViewItem firstRadio)
+                    if (this.trvRadioStations.Items[0] is TreeViewItem firstRadio)
                     {
                         firstRadio.IsSelected = true;
                     }
@@ -444,7 +443,7 @@ namespace MyBrain.Applications.MyRadioPlayer.Views
             }
         }
 
-        private void AddRadioNodeToTreeView(TreeViewItem rootItem, RadioStation radio)
+        private void AddRadioNodeToTreeView(RadioStation radio)
         {
             TreeViewItem radioItem = new TreeViewItem { IsExpanded = true };
             StackPanel stack = new StackPanel { Orientation = Orientation.Horizontal };
@@ -473,47 +472,41 @@ namespace MyBrain.Applications.MyRadioPlayer.Views
 
             radioItem.Header = stack;
             radioItem.Tag = radio;
-            rootItem.Items.Add(radioItem);
+            this.trvRadioStations.Items.Add(radioItem);
+
             radioItem.IsSelected = true;
         }
 
-        private void UpdateTreeViewItem(TreeViewItem trvRootItem)
+        private void UpdateTreeViewItem(TreeViewItem trvItem)
         {
+            StackPanel stack = new StackPanel { Orientation = Orientation.Horizontal };
+            Label lbl = new Label { Content = _currentRadio.Name };
             var logoFullPath = Path.Combine(Helper.Configuration.AppDataFolderFullPath, _currentRadio.Logo);
             FileInfo fileInfo;
+            Image radioImage;
 
             if (File.Exists(logoFullPath))
             {
                 fileInfo = new FileInfo(logoFullPath);
                 AddRadioLogoToCollections(fileInfo.FullName, fileInfo.Name);
-            }
 
-            trvRootItem.IsExpanded = true;
-            StackPanel stack = new StackPanel { Orientation = Orientation.Horizontal };
-            Label lbl = new Label { Content = _currentRadio.Name };
-            Image image;
-            Image defaultImage;
+                if (!string.IsNullOrEmpty(_currentRadio.Logo))
+                {
+                    radioImage = this.radioImageList.Find(im => (String)im.Tag == _currentRadio.Logo) as Image;
+                }
+                else
+                {
+                    radioImage = this.radioImageList.Find(im => (String)im.Tag == "radio") as Image;
+                }
 
-            if (!string.IsNullOrEmpty(_currentRadio.Logo))
-            {
-                image = new Image();
-                defaultImage = this.radioImageList.Find(im => (String)im.Tag == _currentRadio.Logo) as Image;
-            }
-            else
-            {
-                image = new Image();
-                defaultImage = this.radioImageList.Find(im => (String)im.Tag == "radio") as Image;
-            }
-
-            image.Source = defaultImage.Source;
-
-            if (image != null)
-            {
-                stack.Children.Add(image);
+                if (radioImage != null)
+                {
+                    stack.Children.Add(radioImage);
+                }
             }
 
             stack.Children.Add(lbl);
-            trvRootItem.Header = stack;
+            trvItem.Header = stack;
         }
 
         private void ChangeRadioStation(RadioStation radioStation)
@@ -540,7 +533,7 @@ namespace MyBrain.Applications.MyRadioPlayer.Views
         {
             var currentRadioLogo = new BitmapImage();
 
-            if (this.radioBitmapImageDictionary.TryGetValue(radioStation.Logo, out currentRadioLogo))
+            if (!string.IsNullOrEmpty(radioStation.Logo) && this.radioBitmapImageDictionary.TryGetValue(radioStation.Logo, out currentRadioLogo))
             {
                 this.imageBoxRadio.Source = currentRadioLogo;
             }
@@ -553,7 +546,7 @@ namespace MyBrain.Applications.MyRadioPlayer.Views
             this.txtRadioName.Text = radioStation.Name;
             this.txtRadioLogo.Text = radioStation.Logo;
             this.txtRadioWebSite.Text = radioStation.WebSite;
-            this.txtRadioStreamingURL.Text = radioStation.StreamingURI.ToString();
+            this.txtRadioStreamingURL.Text = radioStation.StreamingSource;
         }
 
         private void ChangeControlsState(bool isEnabled)
@@ -576,6 +569,7 @@ namespace MyBrain.Applications.MyRadioPlayer.Views
             this.txtRadioLogo.Text = "";
             this.isNewRadioStation = true;
             this._currentRadio = new RadioStation();
+            SyncControlsWithCurrentRadioStation(this._currentRadio);
         }
 
         private void SaveCurrentProfile()
