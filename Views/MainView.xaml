@@ -58,9 +58,12 @@
                 <RowDefinition Height="*"></RowDefinition>
             </Grid.RowDefinitions>
             <TreeView x:Name="trvRadioStations" Grid.Column="0" Width="194" SelectedItemChanged="TrvRadioStations_SelectedItemChanged" VerticalAlignment="Top">
+                <TreeView.Resources>
+                    <SolidColorBrush Color="#FF96C3EC" x:Key="{x:Static SystemColors.HighlightBrushKey}"/>
+                </TreeView.Resources>
                 <TreeViewItem>
                     <TreeViewItem.Header>
-                        <StackPanel Orientation="Horizontal">
+                        <StackPanel Orientation="Horizontal" Width="150">
                             <fa:ImageAwesome Icon="Music" Foreground="Gray" VerticalAlignment="Center" HorizontalAlignment="Center" Height="26" Width="26" />
                             <Label x:Name="lblTreeViewRoot" Content="Radio Stations"></Label>
                         </StackPanel>

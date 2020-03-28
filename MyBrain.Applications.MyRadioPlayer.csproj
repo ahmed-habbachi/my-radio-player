@@ -155,9 +155,6 @@
     <None Include="Resources\MyBrainRadioPlayer.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="MyBrainRadioPlayer.ico" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Resources\Images\radio-26.png" />
   </ItemGroup>
   <ItemGroup>
@@ -178,6 +175,9 @@
   <ItemGroup>
     <EmbeddedResource Include="DefaultStations\BBCRadio1_Logo.jpg" />
     <EmbeddedResource Include="DefaultStations\Capital-95.8-FM-Logo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="MyBrainRadioPlayer.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
